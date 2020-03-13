@@ -7,9 +7,9 @@
   "author": "DoLim <limdongyoung0@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.19.2",
     "global": "^4.4.0",
-    "graphql-yoga": "^1.18.3",
-    "node-fetch": "^2.6.0"
+    "graphql-yoga": "^1.18.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
