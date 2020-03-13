@@ -1,11 +1,13 @@
-type Dolim {
+type Person {
+  id: Int!
 	name: String!
 	age: Int!
 	gender: String!
 }
 
 type Query {
-	person: Dolim!
+	people: [Person]!
+  person(id: Int!): Person
 }
 
 
