@@ -1,2 +1,3 @@
-# movieql
-Movie API with Graphql 
+# Movie QL
+
+Movie App made with React, Apollo and GraphQL
