@@ -1,6 +1,13 @@
 {
-	"editor.tabSize": 2,
-	"editor.detectIndentation": true,
-	"editor.insertSpaces": true,
-	"editor.acceptSuggestionOnEnter": "off",
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
+  "editor.insertSpaces": true,
+  "editor.acceptSuggestionOnEnter": "off",
+  // Set the default
+
+  "editor.formatOnSave": true
+  // Enable per-language
+  // "[javascript]": {
+  //     "editor.formatOnSave": true
+  // }
 }
