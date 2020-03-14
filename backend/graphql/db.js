@@ -24,7 +24,7 @@ export const getMovie = async id => {
     data: {
       data: { movie }
     }
-  } = await axios(MOVIE_DETAIL_URL, {
+  } = await axios(MOVIE_DETAILS_URL, {
     params: {
       movie_id: id
     }
