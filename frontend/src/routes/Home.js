@@ -52,7 +52,7 @@ const Movies = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 25px;
-  width: 60px;
+  width: 60%;
   position: relative;
   top: -50px;
 `;
