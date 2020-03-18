@@ -10,7 +10,7 @@ import (
 
 type query struct{}
 
-func (_ *query) Hello() string { return "Hello, world!" }
+func (*query) Hello() string { return "Hello, world!" }
 
 func main() {
 	s := `
