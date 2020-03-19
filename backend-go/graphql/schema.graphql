@@ -1,3 +1,7 @@
+schema {
+  query: Query
+}
+
 type Movie {
   id: Int!
   title: String!
