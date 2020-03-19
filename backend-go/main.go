@@ -21,8 +21,6 @@ func check(e error) {
 func main() {
 	dat, err := ioutil.ReadFile(schemaPath)
 	check(err)
-	// fmt.Print(string(dat))
-	// graphqlDir.GetMovies(5.0, 1)
 	s := string(dat)
 	schema := graphql.MustParseSchema(s, &graphqlDir.RootResolver{})
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

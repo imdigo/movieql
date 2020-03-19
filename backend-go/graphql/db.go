@@ -64,20 +64,16 @@ func GetMovies(rating float64, limit int32) []*Movie {
 		"minimum_rating": fmt.Sprintf("%.1f", rating),
 	})
 	resp, err := http.Get(ListMoviesURL + params)
-	// fmt.Println(ListMoviesURL + params)
 	if err != nil {
 		panic(err)
 	}
 	robots, _ := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
-	// fmt.Println(string(robots))
 	var d MoviesData
 	err = json.Unmarshal(robots, &d)
 	if err != nil {
 		panic(err)
 	}
-	// fmt.Println(d.Data.Movies[0].Title)
-	// fmt.Println(d.Data.Movies)
 	return d.Data.Movies
 }
 
@@ -87,18 +83,15 @@ func GetMovie(id graphql.ID) *Movie {
 		"movie_id": string(id),
 	})
 	resp, err := http.Get(MovieDetailsURL + params)
-	// fmt.Println(MovieDetailsURL + params)
 	if err != nil {
 		panic(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
-	// fmt.Println(string(body))
 	var d MovieData
 	err = json.Unmarshal(body, &d)
 	if err != nil {
 		panic(err)
 	}
-	// fmt.Println(d.Data.Movie.Title)
 	return d.Data.Movie
 }

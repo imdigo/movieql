@@ -23,12 +23,6 @@ type MovieArgs struct {
 // Movies query resolver
 func (*RootResolver) Movies(args MoviesArgs) []*MovieResolver {
 	movies := GetMovies(args.Rating, args.Limit)
-	// descriptorResolvers := make([]*descriptorResolver, 0)
-	// for _, d := range descriptors {
-	// 	descriptorResolvers = append(descriptorResolvers, &descriptorResolver{d})
-	// }
-
-	// return &descriptorResolvers
 	movieResolvers := make([]*MovieResolver, 0)
 	for _, m := range movies {
 		movieResolvers = append(movieResolvers, &MovieResolver{m})
