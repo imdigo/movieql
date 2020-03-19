@@ -1,9 +1,12 @@
 package graphql
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/graph-gophers/graphql-go"
 )
 
 // BaseURL of yts
@@ -19,35 +22,83 @@ const MovieDetailsURL = BaseURL + "movie_details.json"
 const MovieSuggestionsURL = BaseURL + "movie_suggestions.json"
 
 func makeParams(params map[string]string) string {
-	paramString := ""
+	paramString := "?"
 	for paramKey, paramValue := range params {
 		paramString += ("&" + paramKey + "=" + paramValue)
 	}
 	return paramString
 }
 
+// ID .
+
+// Movie Data .
+type Movie struct {
+	ID               int       `json:"id"`
+	Title            string    `json:"title"`
+	Rating           float64   `json:"rating"`
+	DescriptionIntro string    `json:"summary"`
+	Language         string    `json:"language"`
+	MediumCoverImage string    `json:"medium_cover_image"`
+	Genres           []*string `json:"genres"`
+}
+
+// MoviesData .
+type MoviesData struct {
+	Data struct {
+		Movies []*Movie `json:"movies"`
+	} `json:"data"`
+}
+
+// MovieData .
+type MovieData struct {
+	Data struct {
+		Movie *Movie `json:"movie"`
+	} `json:"data"`
+}
+
 // GetMovies gets movies from yts movie api.
-func GetMovies(rating float64, limit int) {
-	// 	const {
-	//     data: {
-	//       data: { movies }
-	//     }
-	//   } = await axios(ListMoviesURL, {
-	//     params: {
-	//       limit,
-	//       minimum_rating: rating
-	//     }
-	//   });
-	//   return movies;
+func GetMovies(rating float64, limit int32) []*Movie {
 
 	params := makeParams(map[string]string{
-		"limit":          string(limit),
-		"minimum_rating": fmt.Sprintf("%f", rating),
+		"limit":          fmt.Sprintf("%d", limit),
+		"minimum_rating": fmt.Sprintf("%.1f", rating),
 	})
-	resp, _ := http.Get(ListMoviesURL + params)
+	resp, err := http.Get(ListMoviesURL + params)
+	// fmt.Println(ListMoviesURL + params)
+	if err != nil {
+		panic(err)
+	}
 	robots, _ := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
+	// fmt.Println(string(robots))
+	var d MoviesData
+	err = json.Unmarshal(robots, &d)
+	if err != nil {
+		panic(err)
+	}
+	// fmt.Println(d.Data.Movies[0].Title)
+	// fmt.Println(d.Data.Movies)
+	return d.Data.Movies
+}
 
-	fmt.Printf("%s\n", robots)
-
+// GetMovie from yts using ID
+func GetMovie(id graphql.ID) *Movie {
+	params := makeParams(map[string]string{
+		"movie_id": string(id),
+	})
+	resp, err := http.Get(MovieDetailsURL + params)
+	// fmt.Println(MovieDetailsURL + params)
+	if err != nil {
+		panic(err)
+	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	// fmt.Println(string(body))
+	var d MovieData
+	err = json.Unmarshal(body, &d)
+	if err != nil {
+		panic(err)
+	}
+	// fmt.Println(d.Data.Movie.Title)
+	return d.Data.Movie
 }
