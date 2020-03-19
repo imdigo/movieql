@@ -37,6 +37,16 @@ func (*RootResolver) Movie(args MovieArgs) *MovieResolver {
 	return &movieResolver
 }
 
+// Suggestions query resolver
+func (*RootResolver) Suggestions(args MovieArgs) []*MovieResolver {
+	movies := GetSuggestions(args.ID)
+	movieResolvers := make([]*MovieResolver, 0)
+	for _, m := range movies {
+		movieResolvers = append(movieResolvers, &MovieResolver{m})
+	}
+	return movieResolvers
+}
+
 // MovieResolver struct
 type MovieResolver struct {
 	Movie *Movie
