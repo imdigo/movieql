@@ -86,7 +86,6 @@ func GetMovie(id int32) *Movie {
 		"movie_id": fmt.Sprintf("%d", id),
 	})
 	resp, err := http.Get(MovieDetailsURL + params)
-	fmt.Println(MovieDetailsURL + params)
 	if err != nil {
 		panic(err)
 	}
