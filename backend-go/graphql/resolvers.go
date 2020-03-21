@@ -1,23 +1,17 @@
 package graphql
 
-import (
-	"strconv"
-
-	"github.com/graph-gophers/graphql-go"
-)
-
 // RootResolver .
 type RootResolver struct{}
 
 // MoviesArgs is arg type of Movies query resolver
 type MoviesArgs struct {
-	Rating float64
-	Limit  int32
+	Rating *float64
+	Limit  *int32
 }
 
 // MovieArgs is arg type of Movie query resolver
 type MovieArgs struct {
-	ID graphql.ID
+	ID int32
 }
 
 // Movies query resolver
@@ -53,9 +47,10 @@ type MovieResolver struct {
 }
 
 // ID of Movie
-func (r *MovieResolver) ID() graphql.ID {
-	id := strconv.Itoa(r.Movie.ID) // first, convert to string
-	return graphql.ID(id)          // coerce the string to the graphql.ID type
+func (r *MovieResolver) ID() int32 {
+	// id := strconv.Itoa(r.Movie.ID) // first, convert to string
+	// return graphql.ID(id)          // coerce the string to the graphql.ID type
+	return r.Movie.ID
 }
 
 // Title of Movie

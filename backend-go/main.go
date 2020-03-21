@@ -18,15 +18,29 @@ func check(e error) {
 	}
 }
 
+// CorsMiddleware is middleware to solve problem with apollo-boost
+func CorsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST,OPTIONS")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	dat, err := ioutil.ReadFile(schemaPath)
 	check(err)
 	s := string(dat)
 	schema := graphql.MustParseSchema(s, &graphqlDir.RootResolver{})
-	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/__graphql", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(page)
 	}))
-	http.Handle("/query", &relay.Handler{Schema: schema})
+	http.Handle("/", CorsMiddleware(&relay.Handler{Schema: schema}))
 	log.Fatal(http.ListenAndServe(":4000", nil))
 }
 
@@ -45,7 +59,7 @@ var page = []byte(`
 		<div id="graphiql" style="height: 100vh;">Loading...</div>
 		<script>
 			function graphQLFetcher(graphQLParams) {
-				return fetch("/query", {
+				return fetch("/", {
 					method: "post",
 					body: JSON.stringify(graphQLParams),
 					credentials: "include",

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/graph-gophers/graphql-go"
 )
 
 // BaseURL of yts
@@ -24,7 +22,9 @@ const MovieSuggestionsURL = BaseURL + "movie_suggestions.json"
 func makeParams(params map[string]string) string {
 	paramString := "?"
 	for paramKey, paramValue := range params {
-		paramString += ("&" + paramKey + "=" + paramValue)
+		if paramValue != "" {
+			paramString += ("&" + paramKey + "=" + paramValue)
+		}
 	}
 	return paramString
 }
@@ -33,7 +33,7 @@ func makeParams(params map[string]string) string {
 
 // Movie Data .
 type Movie struct {
-	ID               int       `json:"id"`
+	ID               int32     `json:"id"`
 	Title            string    `json:"title"`
 	Rating           float64   `json:"rating"`
 	DescriptionIntro string    `json:"summary"`
@@ -57,11 +57,15 @@ type MovieData struct {
 }
 
 // GetMovies gets movies from yts movie api.
-func GetMovies(rating float64, limit int32) []*Movie {
-	params := makeParams(map[string]string{
-		"limit":          fmt.Sprintf("%d", limit),
-		"minimum_rating": fmt.Sprintf("%.1f", rating),
-	})
+func GetMovies(rating *float64, limit *int32) []*Movie {
+	params := ""
+	if rating != nil || limit != nil {
+		params = makeParams(map[string]string{
+			"limit":          fmt.Sprintf("%d", *limit),
+			"minimum_rating": fmt.Sprintf("%.1f", *rating),
+		})
+	}
+
 	resp, err := http.Get(ListMoviesURL + params)
 	if err != nil {
 		panic(err)
@@ -77,11 +81,12 @@ func GetMovies(rating float64, limit int32) []*Movie {
 }
 
 // GetMovie from yts using ID
-func GetMovie(id graphql.ID) *Movie {
+func GetMovie(id int32) *Movie {
 	params := makeParams(map[string]string{
-		"movie_id": string(id),
+		"movie_id": fmt.Sprintf("%d", id),
 	})
 	resp, err := http.Get(MovieDetailsURL + params)
+	fmt.Println(MovieDetailsURL + params)
 	if err != nil {
 		panic(err)
 	}
@@ -96,9 +101,9 @@ func GetMovie(id graphql.ID) *Movie {
 }
 
 // GetSuggestions from yts using ID
-func GetSuggestions(id graphql.ID) []*Movie {
+func GetSuggestions(id int32) []*Movie {
 	params := makeParams(map[string]string{
-		"movie_id": string(id),
+		"movie_id": fmt.Sprintf("%d", id),
 	})
 	resp, err := http.Get(MovieSuggestionsURL + params)
 	if err != nil {
