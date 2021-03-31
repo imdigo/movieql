@@ -7,7 +7,7 @@
   "author": "DoLim <limdongyoung0@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "global": "^4.4.0",
     "graphql-yoga": "^1.18.3"
   },
